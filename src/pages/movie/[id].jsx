@@ -3,27 +3,11 @@ import Header from "@/components/Header";
 import { movies } from "@/utils/data";
 import MovieContent from "@/components/MovieContent";
 
-export async function getStaticPaths() {
-  const paths = movies.map((movie) => ({
-    params: { id: movie.id.toString() },
-  }));
-
-  return { paths, fallback: false };
-}
-
-export async function getStaticProps({ params }) {
-  const movie = movies.find((m) => m.id === Number(params.id));
-
+export default function MovieDetail({ movie }) {
   if (!movie) {
-    return { notFound: true };
+    return <p>Film bulunamadı.</p>;
   }
 
-  return {
-    props: { movie },
-  };
-}
-
-export default function MovieDetail({ movie }) {
   return (
     <div className="h-screen flex flex-col justify-between">
       <Header />
@@ -35,4 +19,22 @@ export default function MovieDetail({ movie }) {
       </div>
     </div>
   );
+}
+
+export async function getStaticPaths() {
+  const paths = movies.map((movie) => ({
+    params: { id: movie.id.toString() },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const movie = movies.find((m) => m.id === Number(params.id));
+
+  return {
+    props: {
+      movie: movie || null,
+    },
+  };
 }
