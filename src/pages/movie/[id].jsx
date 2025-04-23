@@ -1,26 +1,34 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import React from "react";
 import { movies } from "@/utils/data";
-import { notFound } from "next/navigation";
-import { useRouter } from "next/router";
 import MovieContent from "@/components/MovieContent";
 
-export default function MovieDetail() {
-  const router = useRouter();
-  const { id } = router.query;
+export async function getStaticPaths() {
+  const paths = movies.map((movie) => ({
+    params: { id: movie.id.toString() },
+  }));
 
-  console.log("ID from URL:", id);
+  return { paths, fallback: false };
+}
 
-  const movie = movies.find((m) => m.id === Number(id));
+export async function getStaticProps({ params }) {
+  const movie = movies.find((m) => m.id === Number(params.id));
 
-  if (!movie) return notFound();
+  if (!movie) {
+    return { notFound: true };
+  }
 
+  return {
+    props: { movie },
+  };
+}
+
+export default function MovieDetail({ movie }) {
   return (
     <div className="h-screen flex flex-col justify-between">
       <Header />
       <div className="px-5 md:px-29 lg:px-80 py-8">
-        <MovieContent />
+        <MovieContent movie={movie} />
       </div>
       <div className="py-8">
         <Footer />

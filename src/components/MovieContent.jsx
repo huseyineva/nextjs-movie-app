@@ -1,10 +1,10 @@
 import React from "react";
 import Link from "next/link";
-import { movies } from "@/utils/data";
 
-export default function MovieContent() {
-  const movie = movies[8];
-
+export default function MovieContent({ movie }) {
+  if (!movie) {
+    return <p>Film bulunamadı.</p>;
+  }
   return (
     <div className="flex flex-col gap-8">
       <h2 className="font-bold text-xl lg:text-7xl leading-18 max-w-xl">
